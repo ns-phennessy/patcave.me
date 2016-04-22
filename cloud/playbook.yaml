@@ -1,0 +1,49 @@
+---
+
+- hosts: all
+  become: true
+
+  # vars:
+  #   - allowed_ports:
+  #     - 80
+  #     - 443
+
+  roles:
+    - utils
+    # - security
+
+  tasks:
+
+    - name: Install MySQL
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - mariadb-server
+        - php-mysql
+        - MySQL-python
+
+    - name: Start MariaDB
+      service:
+        name: mariadb
+        state: started
+        enabled: yes
+
+    - include_vars: "db-secrets.yaml"
+    - name: Add MySQL user
+      mysql_user:
+        name: owncloud
+        password: "{{ mysql_password }}"
+        priv: 'clouddb.*:ALL'
+        state: present
+
+    - name: Install Owncloud
+      yum:
+        name: owncloud
+        state: latest
+
+    - name: Start Apache Web Server
+      service:
+        name: httpd
+        state: started
+        enabled: yes
