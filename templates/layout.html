@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{ '/static/style.css' | url }}">
+        <link rel="stylesheet" href="{{ get_pygments_stylesheet() | url }}">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,700,700italic">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="https://i.icomoon.io/public/temp/7c1e068170/UntitledProject/style-svg.css">
+        <script defer src="https://i.icomoon.io/public/temp/7c1e068170/UntitledProject/svgxuse.js"></script>
+
+        <title>{% block title %}Welcome{% endblock %} — The Patcave</title>
+
+        <style>
+            nav {
+                position: sticky;
+                top: 1rem;
+                height: 0;
+            }
+            pre {
+                padding-left: 1rem;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <nav class="column column-20">
+                    <h4>The Patcave</h4>
+                    <img src="https://avatars6.githubusercontent.com/u/5940454?v=4&s=460" alt="">
+                    <div style="display:flex; justify-content: space-between;">
+                        <a href="https://github.com/ns-phennessy">Blog</a> |
+                        <a href="https://github.com/ns-phennessy">About</a> |
+                        <a href="https://github.com/ns-phennessy">Contact</a>
+                    </div>
+                </nav>
+
+                <main class="column">
+                    <article style="padding-left:3rem;">
+                        {% block body %}{% endblock %}
+                    </article>
+                </main>
+            </div>
+        </div>
+    </body>
+</html>

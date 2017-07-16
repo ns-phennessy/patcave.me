@@ -1,0 +1,37 @@
+title: Example blog post
+---
+date: 2015-09-16
+---
+source: content/blog/first-post/
+---
+body:
+
+# Intro
+
+Hi Im patrick; this is some filler text
+
+Here is a nice list:
+
+* Stuff
+* More things
+* Yyeah
+
+`this is a line`
+
+## Here is some sample code I wrote:
+
+```python
+#!/usr/bin/python3
+
+from engine import RunForrestRun
+
+"""Test code for syntax highlighting!"""
+
+class Foo:
+	def __init__(self, var):
+		self.var = var
+		self.run()
+
+	def run(self):
+		RunForrestRun()  # run along!
+```
