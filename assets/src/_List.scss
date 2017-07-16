@@ -1,0 +1,38 @@
+
+// List
+// ––––––––––––––––––––––––––––––––––––––––––––––––––
+
+dl, ol, ul {
+	list-style: none;
+	margin-top: 0;
+	padding-left: 0;
+
+	dl,	ol,	ul {
+		font-size: 90%;
+		margin: 1.5rem 0 1.5rem 3.0rem;
+	}
+}
+
+ol {
+	//list-style: decimal inside;
+}
+
+ul {
+	//list-style: circle inside;
+	padding-left: 1rem;
+	li{
+		position: relative;
+		padding-left: 3rem;
+
+		&:before{
+			position: absolute;
+			display: inline-block;
+			content: "•";
+			font-size: 125%;
+			font-weight: bold;
+			line-height: 1.25;
+			color: $color-primary;
+			left:0;
+		}
+	}
+}

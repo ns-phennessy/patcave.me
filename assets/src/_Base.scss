@@ -1,0 +1,52 @@
+
+// Base
+// ––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// Set box-sizing globally to handle padding and border widths
+*,
+*:after,
+*:before {
+	box-sizing: inherit;
+}
+
+// The base font-size is set at 62.5% for having the convenience
+// of sizing rems in a way that is similar to using px: 1.6rem = 16px
+html {
+	box-sizing: border-box;
+	font-size: 62.5%;
+}
+
+// Default body styles
+body {
+	color: $color-secondary;
+	font-family: 'Roboto', 'Arial', sans-serif;
+	font-size: 1.6em;
+	font-weight: 300;
+	letter-spacing: .01em;
+	line-height: 1.6;
+	margin: 0;
+}
+
+header {
+	margin-bottom: 10rem;
+	background-color: $color-tertiary;
+	padding: 2rem;
+	border-bottom: 1px solid $color-quinary;
+
+	& a{
+		margin: 1rem 1rem;
+	}
+
+}
+
+footer {
+	margin-top: 10rem;
+	background-color: $color-tertiary;
+	padding: 3rem;
+	border-top: 1px solid $color-quinary;
+
+	& a{
+		margin: 1rem 1rem;
+	}
+
+}
