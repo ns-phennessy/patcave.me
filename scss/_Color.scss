@@ -1,0 +1,28 @@
+
+// Color
+// ––––––––––––––––––––––––––––––––––––––––––––––––––
+
+$color-initial: #fff !default;
+$color-primary: #2185d0 !default;
+$color-secondary: #8ba3a9 !default;
+$color-tertiary: #f4f5f6 !default;
+$color-quaternary: #d1d1d1 !default;
+$color-quinary: #e1e1e1 !default;
+
+
+
+$color-initial: #161a29;
+$color-primary: #7289da;
+$color-secondary: #8793ba;
+$color-tertiary: #1b2137;
+$color-quaternary: lighten($color-initial, 10%);
+$color-quinary: lighten($color-quaternary, 10%);
+
+
+
+$color-header: #ffffff;
+$color-text: #98a5d1;
+$color-text-highlight: #ddd;
+$color-block: #1b2137;
+$color-block-border: darken(#1b2137, 7.5%);
+$color-lines: #282f4a;

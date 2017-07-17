@@ -4,16 +4,15 @@
     <div class="no-select">
         <h1 style="margin-bottom: 0rem; font-size: 5rem">{{ this.title }}</h1>
         <span class="float-left">{{ this.date | dateformat('long')}}</span>
-        <a href="https://github.com/ns-phennessy/patcave.me/{{ this.source }}" class="button button-outline float-right">
-            <svg class="icon icon-github2"><use xlink:href="#icon-github2"></use></svg>&nbsp;
-            Source
+        <a href="https://github.com/ns-phennessy/patcave.me/tree/master/content{{ this.path.split('@')[0]}}/contents.lr" class="button button-clear float-right">
+            <svg class="icon icon-pencil2"><use xlink:href="#icon-pencil2"></use></svg>&nbsp;
+            Edit on Github
         </a>
     </div>
     <span class="clearfix"></span>
 
-    <div class="centered">
+    <div class="centered no-select">
         <img src="https://assets.digitalocean.com/ghost/2017/07/NET_neutrality_blog.png" alt="">
     </div>
-
     {{ this.body }}
 {% endblock %}

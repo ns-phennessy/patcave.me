@@ -19,22 +19,51 @@ html {
 // Default body styles
 body {
 	color: $color-secondary;
+	background-color: $color-initial;
 	font-family: 'Roboto', 'Arial', sans-serif;
 	font-size: 1.6em;
 	font-weight: 300;
 	letter-spacing: .01em;
 	line-height: 1.6;
 	margin: 0;
+	min-width: 720px;
 }
 
 header {
-	margin-bottom: 10rem;
 	background-color: $color-tertiary;
-	padding: 2rem;
-	border-bottom: 1px solid $color-quinary;
+	padding: 3rem;
+	padding-bottom: 1rem;
+
+	& svg {
+		height: 2rem !important;
+		width: 2rem !important;
+	}
+
+	& a:hover:before{
+		transform: scaleX(0) !important;
+	}
 
 	& a{
-		margin: 1rem 1rem;
+		margin: 1rem 1.5rem;
+		color: #D4DEFF !important;
+		font-weight: bold;
+		font-size: 1.4rem;
+		text-transform: uppercase;
+		padding-bottom: 1.4rem;
+		transition: all 150ms;
+		border-bottom: 3px solid transparent
+	}
+	& a:hover, & a:hover svg{
+		color: white !important;
+	}
+	& nav > a:hover{
+		border-bottom: 3px solid white;
+		padding-bottom: 1.2rem;
+	}
+
+	& h1 {
+		color:white;
+		font-weight: bold;
 	}
 
 }

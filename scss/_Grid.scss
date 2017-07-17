@@ -71,6 +71,10 @@
 			margin-left: 10%;
 		}
 
+		&.column-offset-15 {
+			margin-left: 15%;
+		}
+
 		&.column-offset-20 {
 			margin-left: 20%;
 		}
@@ -112,6 +116,11 @@
 		&.column-10 {
 			flex: 0 0 10%;
 			max-width: 10%;
+		}
+
+		&.column-15 {
+			flex: 0 0 15%;
+			max-width: 15%;
 		}
 
 		&.column-20 {

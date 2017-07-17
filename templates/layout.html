@@ -3,7 +3,7 @@
 <html>
     <head>
         <!-- CSS -->
-        <link rel="stylesheet" href="{{ '/static/style.css' | url }}">
+        <link rel="stylesheet" href="{{ '/static/style.min.css' | url }}">
         <link rel="stylesheet" href="{{ get_pygments_stylesheet() | url }}">
 
         <!-- Fonts -->
@@ -12,43 +12,53 @@
         <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
 
         <!-- Icons -->
-        <link rel="stylesheet" href="https://i.icomoon.io/public/temp/7c1e068170/UntitledProject/style-svg.css">
-        <script defer src="https://i.icomoon.io/public/temp/7c1e068170/UntitledProject/svgxuse.js"></script>
+        <link rel="stylesheet" href="https://i.icomoon.io/public/temp/9d88a6421d/UntitledProject/style-svg.css">
+        <script defer src="https://i.icomoon.io/public/temp/9d88a6421d/UntitledProject/svgxuse.js"></script>
 
         <title>{% block title %}Welcome{% endblock %} — The Patcave</title>
 
         <style>
-            nav {
-                position: sticky;
-                top: 1rem;
-                height: 0;
+            header:after {
+                content: '';
+                background-image: url(/static/cave.svg);
+                height: 10rem;
+                width: 1024px;
+                background-repeat: repeat-x;
+                background-position: 50% 0rem;
+                position: absolute;
+                left: calc(50% - 512px);
+                z-index: -9999;
             }
-            pre {
-                padding-left: 1rem;
-            }
-
         </style>
-
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <nav class="column column-20">
-                    <h4>The Patcave</h4>
-                    <img src="https://avatars6.githubusercontent.com/u/5940454?v=4&s=460" alt="">
-                    <div style="display:flex; justify-content: space-between;">
-                        <a href="https://github.com/ns-phennessy">Blog</a> |
-                        <a href="https://github.com/ns-phennessy">About</a> |
-                        <a href="https://github.com/ns-phennessy">Contact</a>
-                    </div>
+        <header class="no-select">
+            <div class="container">
+                <h1 style="margin: 0" class="float-left">The Patcave</h1>
+                <div class="float-right">
+                    <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
+                        <svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>
+                    </a>
+                    <a href="https://github.com/ns-phennessy" target="_blank">
+                        <svg class="icon icon-github2"><use xlink:href="#icon-github2"></use></svg>
+                    </a>
+                    <a href="#" target="_blank">
+                        <svg class="icon icon-rss"><use xlink:href="#icon-rss"></use></svg>
+                    </a>
+                </div>
+                <span class="clearfix"></span>
+                <nav>
+                    <a href="#">Blog</a>
+                    <a href="#">About</a>
+                    <a href="#">Contact</a>
                 </nav>
-
-                <main class="column">
-                    <article style="padding-left:3rem;">
-                        {% block body %}{% endblock %}
-                    </article>
-                </main>
             </div>
-        </div>
+        </header>
+
+        <main class="container">
+            <article>
+                {% block body %}{% endblock %}
+            </article>
+        </main>
     </body>
 </html>

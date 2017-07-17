@@ -3,8 +3,9 @@
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
 
 code {
-	background: $color-tertiary;
-	border: 1px solid $color-quinary;
+	background: $color-block;
+	border: 1px solid $color-block-border;
+	color: $color-text-highlight;
 
 	border-radius: .4rem;
 	font-family: "Hack", monospace;
@@ -17,11 +18,14 @@ code {
 }
 
 pre {
-	background: $color-tertiary;
-	border: 1px solid $color-quinary;
+	background: $color-block;
+	border: 1px solid $color-block-border;
 	border-left: .3rem solid $color-primary;
 	overflow-y: hidden;
 	border-radius: 0.35rem;
+	padding-left: 1rem;
+	padding-top: 0.5rem;
+	padding-bottom: 2rem;
 
 	& > code {
 		border-radius: 0;
@@ -30,6 +34,6 @@ pre {
 		font-size: 1rem;
 		white-space: pre;
 		border: None;
-		background-color: $color-tertiary;
+		background-color: $color-block;
 	}
 }

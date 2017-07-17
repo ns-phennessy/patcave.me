@@ -19,12 +19,13 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: 500;
 	letter-spacing: -.1rem;
 	margin-bottom: 2.0rem;
+	color: $color-text;
 }
 
 h1 {
 	font-size: 4rem;
 	line-height: 1.2;
-	color: $color-primary;
+	color: $color-header;
 	position: relative;
 	margin-top: 10rem;
 	padding-bottom: 1.5rem;
@@ -32,15 +33,17 @@ h1 {
 }
 
 article > h1{
+	color: $color-header;
+
 	&:before {
 		content: "#";
 		padding-right: 1rem;
-		color: $color-quinary;
+		color: $color-text;
 		transition: 250ms color;
 	}
 
 	&:hover:before {
-		color: $color-primary;
+		color: $color-text-highlight;
 	}
 
 	&:after {
@@ -52,7 +55,7 @@ article > h1{
 		height: 0;
 		width: 100%;
 		border-radius: 0;
-		border-bottom: 1px solid $color-quinary;
+		border-bottom: 2px solid $color-lines;
 	}
 }
 
