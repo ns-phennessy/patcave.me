@@ -4,7 +4,7 @@
     <head>
         <!-- CSS -->
         <link rel="stylesheet" href="{{ '/static/style.min.css' | url }}">
-        <link rel="stylesheet" href="{{ get_pygments_stylesheet() | url }}">
+        <link rel="stylesheet" href="{{ '/static/pure.css' | url }}">
 
         <!-- Fonts -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,700,700italic">
@@ -12,13 +12,13 @@
         <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
 
         <!-- Icons -->
-        <link rel="stylesheet" href="https://i.icomoon.io/public/temp/9d88a6421d/UntitledProject/style-svg.css">
-        <script defer src="https://i.icomoon.io/public/temp/9d88a6421d/UntitledProject/svgxuse.js"></script>
+        <link rel="stylesheet" href="{{ '/static/icon.css' | url }}">
+        <script src="{{ '/static/icon.min.js' | url }}"></script>
 
         <title>{% block title %}Welcome{% endblock %} — The Patcave</title>
 
         <style>
-            header:after {
+            /*header:after {
                 content: '';
                 background-image: url(/static/cave.svg);
                 height: 10rem;
@@ -28,37 +28,31 @@
                 position: absolute;
                 left: calc(50% - 512px);
                 z-index: -9999;
-            }
+            }*/
         </style>
     </head>
     <body>
-        <header class="no-select">
-            <div class="container">
-                <h1 style="margin: 0" class="float-left">The Patcave</h1>
-                <div class="float-right">
-                    <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
-                        <svg class="icon icon-linkedin"><use xlink:href="#icon-linkedin"></use></svg>
-                    </a>
-                    <a href="https://github.com/ns-phennessy" target="_blank">
-                        <svg class="icon icon-github2"><use xlink:href="#icon-github2"></use></svg>
-                    </a>
-                    <a href="#" target="_blank">
-                        <svg class="icon icon-rss"><use xlink:href="#icon-rss"></use></svg>
-                    </a>
-                </div>
-                <span class="clearfix"></span>
-                <nav>
-                    <a href="#">Blog</a>
-                    <a href="#">About</a>
-                    <a href="#">Contact</a>
-                </nav>
-            </div>
+        <header>
+            <h1>The Patcave</h1>
+            <nav class="social">
+                <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
+                    <svg class="icon linkedin"><use xlink:href="/static/icons.svg#linkedin"></use></svg>
+                </a>
+                <a href="https://github.com/ns-phennessy" target="_blank">
+                    <svg class="icon github2"><use xlink:href="/static/icons.svg#github2"></use></svg>
+                </a>
+                <a href="#" target="_blank">
+                    <svg class="icon rss"><use xlink:href="/static/icons.svg#rss"></use></svg>
+                </a>
+            </nav>
+            <nav>
+                <a href="#">Blog</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
         </header>
-
-        <main class="container">
-            <article>
-                {% block body %}{% endblock %}
-            </article>
+        <main>
+            {% block body %}{% endblock %}
         </main>
     </body>
 </html>
