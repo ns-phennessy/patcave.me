@@ -32,7 +32,7 @@ h1 {
 	font-family: "Titillium Web";
 }
 
-article > h1{
+main > article > h1{
 	color: $color-header;
 
 	&:before {

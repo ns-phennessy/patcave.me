@@ -29,7 +29,7 @@ body {
 	min-width: 720px;
 }
 
-header {
+body > header {
 	background-color: $color-tertiary;
 	padding: 3rem;
 	padding-bottom: 1rem;
@@ -37,6 +37,7 @@ header {
 	& svg {
 		height: 2rem !important;
 		width: 2rem !important;
+		cursor: pointer !important;
 	}
 
 	& a:hover:before{
@@ -51,7 +52,8 @@ header {
 		text-transform: uppercase;
 		padding-bottom: 1.4rem;
 		transition: all 150ms;
-		border-bottom: 3px solid transparent
+		border-bottom: 3px solid transparent;
+		cursor: pointer;
 	}
 	& a:hover, & a:hover svg{
 		color: white !important;
@@ -64,18 +66,6 @@ header {
 	& h1 {
 		color:white;
 		font-weight: bold;
-	}
-
-}
-
-footer {
-	margin-top: 10rem;
-	background-color: $color-tertiary;
-	padding: 3rem;
-	border-top: 1px solid $color-quinary;
-
-	& a{
-		margin: 1rem 1rem;
 	}
 
 }
