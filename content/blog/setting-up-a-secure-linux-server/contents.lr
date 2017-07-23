@@ -1,0 +1,148 @@
+title: Setting up a secure Linux server
+---
+_model: post
+---
+cover_image: cover.jpg
+---
+date: 2014-05-22
+---
+summary: This post covers everything you need to know for setting up your own Linux server using [DigitalOcean](https://www.digitalocean.com/?refcode=95baed009ba2) as a provider. They provide super cheap, reliable, and easily manageable virtual servers.
+---
+body:
+
+# Overview
+This is not a comprehensive guide; but should get you started and prevent you from getting pwned immediately.
+
+Following these small steps will make you a much harder target to compromise, and are probably not worth most hackers time.
+
+There are a lot of automated attacks going around and hitting known server cluster IP ranges looking for low hanging fruit and vulnerable servers they can exploit.
+
+
+# Creating a Droplet
+DigitalOcean makes it very simple to create a droplet. Once you have an account, create a droplet
+
+* **Name**: Name your droplet whatever you want. This will become the **hostname** on the machine itself once it's created.
+* **Size**: Go for the cheapest one. The most it will charge you is $5 / month (a very good deal imo).
+* **Location**: I've found that the New York location is rather slow for me, so I usually opt for the San Francisco location.
+* **Image**: Most people will be comfortable with Ubuntu; so we will select that.
+
+ Also important to note; you should opt for using [LTS](https://wiki.ubuntu.com/LTS) releases since they're supported for a while.
+
+
+# Login
+Once created; DigitalOcean will e-mail you your new login credentials.
+
+## From a Terminal (OSX or Linux)
+Open a terminal window and type in the following command:
+```bash
+ssh root@ipaddress
+```
+
+It will prompt for a password; enter the one sent to your email.
+
+## From Putty (Windows)
+Download [PuTTy](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html) if you don't have it already. PuTTy will simulate a terminal session similar to that on a Linux or OSX system.
+
+Put in the supplied ip-address in the `hostname` field, and leave the port on `22`. Then click connect.
+
+
+You will be prompted for your password; feel free to copy and paste it from the email directly. If you did everything right; you should now be logged into your DigitalOcean node as the root user!
+
+
+# Installing Updates
+The first thing you should do is bring all your software up to date.
+
+DigitalOcean does pretty well keeping their images up to date; but you want to get in the habit of having the freshest updates to software on your system.
+
+Use the following commands:
+
+```bash
+apt-get update
+apt-get upgrade
+```
+
+**update** will hit all the [Ubuntu repositories](https://help.ubuntu.com/community/Repositories/Ubuntu) and refresh any package names or versions.
+
+**upgrade** will upgrade any out of date packages and remove anything that is now unnecessary on your system.
+
+
+# Disabling Root Access
+It's a good idea to disable root user logins via SSH. Root is allowed to do literally anything on a system, so it's a dangerous account.
+
+## Add an admin (sudo) account
+
+A **sudo** user is a user on a Linux system who as the ability to perform certain root-level operations after a password prompt.
+*You should only give `sudo` access to users who absolutely need it.*
+
+Use the following command to add a new sudoer:
+
+```bash
+useradd -g sudo -s /bin/bash pat
+```
+
+It will prompt you for a password and email; put whatever you like there (it can be changed later if desired).
+
+Once done; I would ***highly*** recommend starting another terminal or PuTTy session and logging in as this user to verify that you're able to login. The last thing you want is to lock yourself out.
+
+## Disable Root Login over SSH
+
+Next you'll need to stop the root user from logging in at all.
+
+```bash
+vim /etc/ssh/sshd_config
+```
+
+Look for a line that says `PermitRootLogin` and set it to `no`
+
+Then reset the SSH server:
+
+```bash
+systemctl restart sshd
+```
+
+
+# Firewall
+
+Another important thing to do is to stop automated port scanning attacks on your server.
+At the moment, we are only using a single port for our communications, *22* for SSH.
+A [firewall](http://en.wikipedia.org/wiki/Firewall_%28computing%29) can stop other hosts from connecting to those ports, hogging up system resources, and potentially exploiting unknown vulnerabilities.
+
+You should tune the rules to your liking, but heres a good [boilerplate](https://gist.github.com/ns-phennessy/5a3b60e41022748f5f68) to start from
+```bash
+wget https://gist.githubusercontent.com/ns-phennessy/5a3b60e41022748f5f68/raw/e9e96a793dd5668b8568a437e083594318a41c86/Firewall%20Script
+chmod +x Firewall\ Script
+sudo bash Firewall\ Script
+```
+
+The script will setup sensible defaults and leave port 22 open.
+**IT IS VERY IMPORTANT TO NEVER CLOSE PORT 22**.
+You *will* lock yourself out of your system if you do this.
+
+
+
+# Fail2Ban
+
+[Fail2Ban](http://en.wikipedia.org/wiki/Fail2ban) is a [daemon](http://en.wikipedia.org/wiki/Daemon_%28computing%29) that follows the authentication log and see if any IP address has too many failed login attempts, and temporarily bans them.
+
+Install it and setup default config:
+
+```bash
+sudo apt-get install fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+```
+
+You can now go and tweak your jail settings.
+
+```bash
+sudo vim /etc/fail2ban/jail.local
+```
+
+I like to set my `bantime` ridiculously high but give myself a `maxretry` of at least 5 over a `findtime` of about 10 minutes.
+
+Remember that the goal is to catch brute force attacks, you need to be aware that your rules will have to reflect the kind of traffic you're seeing. A smart attacker will brute force your system slowly to avoid getting caught up in filters like this one.
+
+
+# Done!
+
+Congrats, you're setup and had your first taste with server security.
+Hopefully this article has given you some insight into how to setup and maintain a Linux server and not get immediately hacked

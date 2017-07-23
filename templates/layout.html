@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="{{ '/static/icon.css' | url }}">
         <script src="{{ '/static/icon.min.js' | url }}"></script>
 
-        <title>{% block title %}Welcome{% endblock %} — The Patcave</title>
+        <title>{% block title %}{% endblock %} : The Patcave</title>
 
         <style>
             /*header:after {
@@ -46,9 +46,9 @@
                 </a>
             </nav>
             <nav>
-                <a href="#">Blog</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
+                <a href="/blog">Blog</a>
+                <a href="/">About</a>
+                <a href="mailto:phennessy517@gmail.com">Contact</a>
             </nav>
         </header>
         <main>

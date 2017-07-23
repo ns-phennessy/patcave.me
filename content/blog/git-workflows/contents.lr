@@ -1,0 +1,111 @@
+title: Thinking about a release oriented Git workflow
+---
+_model: post
+---
+cover_image: cover.png
+---
+date: 2016-12-16
+---
+summary: Some of my thoughts on how to setup a Git workflow focued on releases and versioning of
+software projects
+---
+body:
+
+# Common Git Workflows
+
+## Trunk focused
+
+This comes mostly from the SVN and CVS worlds. Essentially it's just that everyone always works off
+of `trunk` / `master`. It is by far the simplest to understand since developers just constantly pull
+and push directly to master.
+
+#### Pros
+
+* Easy to understand
+* Doesn't require any special setup before hand
+* Ideal for very small teams or individuals working on pet projects
+
+#### Cons
+
+* Merge conflicts would become a train-wreck
+* Force pushing would have to be disabled otherwise any developer could rewrite the tree and history
+would be always in-flux
+* No code-review process
+    * This could be fine if you are implementing something like
+    [paired programming](https://en.wikipedia.org/wiki/Pair_programming)
+    since you would always have at least 2 sets of eyes on the code.
+
+
+## Feature branching
+
+This is by far the most popular branching strategy among agile development teams.
+
+1. Bob wants to work on **Feature 1**
+2. Do a `git pull` from `master` to get up to the latest stable code
+3. Create a new 'feature' branch
+4. Change things at will and save that work by making commits to that branch
+5. It is Bob's responsibility to resolve any merge conflicts that arise over the course of time
+6. When **Feature 1** is ready to merge...
+    * Bob will create a [pull request](https://help.github.com/articles/about-pull-requests)
+    * Bob will run automated tests against this code with a CI server like [Travis](https://travis-ci.org/)
+    * If tests pass; Bob asks his fellow developers for a code review
+    * Once a code maintainer or project lead approves this change, Bob can then merge the code back
+    to `master`
+
+
+#### Pros
+
+* New features or changes can be thoroughly reviewed before making it to `master`
+* Enables automated testing
+
+#### Cons
+
+* Long lived branches can become a mess of merge conflicts
+* Without rebasing, Bob will inter-mix several commits into `master` tree.
+Thankfully Github has added a [squash feature](https://github.com/blog/2141-squash-your-commits) to
+make this easy
+
+
+
+# But what about versions and releases?
+
+Both the above strategies are missing something though; it says nothing and makes no opinion about
+versioning.
+
+There is an elusive question that is often missed when talking about branching strategy; what is a
+version of **Software X**? This might sound like a dumb question at face value; but it is important
+to define what a version means to your individual project.
+
+Really a version of software is just a bundle of code at some point in history. In terms of
+Git, this can literally be commits. Infact in a manner of speaking; every commit is a version of the
+code. However you *may* not want to publish every commit directly to production.
+
+So we could simply expand on that definition and say that a "version" is just a commit we decide is
+something *could* release. Perhaps then a "version" is a [build](https://en.wikipedia.org/wiki/Software_build)
+with a human-comprehendable number attached to it.
+
+Okay so lets talk about versioning then
+
+### Semantic Versioning
+
+[Semantic Versioning](http://semver.org/) (also known as semver) defines a scheme for what version
+numbers should mean. Heres what it looks like:
+
+`major`.`minor`.`micro`
+
+* A change to *Major* means you are introducing one or more backwards incompatible changes to your code
+and consumers of your software should be aware of this fact. It would be in your best interest to publish
+release notes for this.
+* Bumping *Minor* means that we are introducing a new set of features and bug fixes, but make the
+guarantee that our code will work with older versions in our same major version.
+* Micro is a lot more flexible; this is what I would say is just a build of the software.
+
+
+### Versioning and Git
+
+Okay so if we have a well defined version scheme, how do we relate Git concepts to that?
+
+Anytime you want to bump the `micro` version of the software; you *must* run a
+[build](https://en.wikipedia.org/wiki/Software_build). This build includes running unit, functional,
+and regression tests as well as necessary compilation steps. The output of this build is ideally
+something you can freely distribute ([RPM](http://rpm.org/), Zip archive, Tarball, Jar file, .exe file)

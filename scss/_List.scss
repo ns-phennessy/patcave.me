@@ -14,19 +14,37 @@ dl, ol, ul {
 }
 
 ol {
-	//list-style: decimal inside;
-}
-
-ul {
-	//list-style: circle inside;
 	padding-left: 1rem;
+	counter-reset: section;
+
 	li{
 		position: relative;
 		padding-left: 3rem;
 
 		&:before{
 			position: absolute;
-			display: inline-block;
+			counter-increment: section;
+			content: counter(section) ".";
+			font-weight: bold;
+			font-family: "Titillium Web";
+			font-size: 1.3rem;
+			color: $color-primary;
+			left:0.5rem;
+			top: 0.25rem;
+		}
+	}
+}
+
+ul {
+	//list-style: circle inside;
+	padding-left: 1rem;
+
+	li{
+		position: relative;
+		padding-left: 3rem;
+
+		&:before{
+			position: absolute;
 			content: "•";
 			font-size: 125%;
 			font-weight: bold;

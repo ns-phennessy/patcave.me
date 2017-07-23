@@ -1,0 +1,162 @@
+title: What I learned from making a Python Chatbot
+---
+_model: post
+---
+cover_image: cover.png
+---
+date: 2015-09-06
+---
+summary: My adventure into the internals of Python and coding a fully automous Chat bot from scratch.
+---
+body:
+
+# Intro
+Lately I've been reading and hearing a lot about [Chat Ops](https://www.pagerduty.com/blog/what-is-chatops/).
+It's a practice started by Github which uses a chat service like *Hipchat* or *Slack* with a bot user to provide feedback and insights into their infrastructure.
+
+This is super cool because it allows for transparency in to what you're doing at any given time.
+Very useful in a high stress situation, like a big production failure where multiple engineers are trying to fix it;
+they can easily coordinate their efforts and not have to tell everyone what they're doing right that second because everyone can see it.
+
+# Motivations
+
+When I was younger, I played in the early days of **Starcraft 1** and **Diablo II**. To play online; you had an IRC like client called Battle.Net, and there were bots galore. Thanks to our collective knowledge; the clan I was in at the time, we became the top clan in Diablo. One of the services we ran was a trivia bot, which is half the reason people came to our channel. The other was the exp runs they could get from it.
+
+Ever since getting on these modern chat services, I wanted a bot that I built entirely on my own. So my initial idea was to build a trivia bot. It used webhooks; and I did everything synchronously with some simple HTTP-server library. It worked; but was far from an ideal implementation.
+
+But I did have an awesome name for it: ***Regis Philbot***, after the infamous Who Want's to be a Millionaire host; so of course I wanted to make the bot as cool as the name.
+
+# The first iteration
+
+While there were many bots already out there; I wanted the challenge of building it myself from scratch. I made the decision to use Python, which I was still sort of new to at the time (but so glad I did).
+
+My initial design was poor; not thought out at all. I guess I just wanted to see if I could even get it to work at all. I did get it working; but it was very buggy and unstable.
+
+I had started using [Discord](http://discordapp.com) chat / voice service for some of my gaming friends and I, and I wanted to get a bot in there to have fun with. So started rewriting the bot from scratch and began the process of reverse engineering the Discord API. (This was fairly easy since Discord is a web based client)
+
+![](https://omundy.files.wordpress.com/2012/04/i-will-not-write-any-more-bad-code.gif)
+
+# Super Object Oriented Python Master Race
+
+I didn't have the whole design in my head when I started; but my goal was to create a simple to use API for plugins, so that you can write a plugin that does stuff. To facilitate this; I started with a `Core` object.
+
+## Core
+In [object oriented programming](https://en.wikipedia.org/wiki/Object-oriented_programming) terms, the `Core` uses *composition*. So then the question is; what things should the core allow us to do?
+
+Heres what I came up with:
+
+* Connect / Disconnect to chat service
+* Manage the Bot config
+* Handle plugins
+* Broker events
+
+## Connector
+
+The connector class is the bot's interface to the chat service; in this case, I was using [Discord](https://discordapp.com/).
+
+This class was a good opportunity to use an **[interface](https://en.wikipedia.org/wiki/Protocol_(object-oriented_programming))**. So then we ask; what does the bot need to be able to do with the chat service? What things are common operations among all modern chat services?
+
+I created a number of methods to abstract this:
+
+```python
+connector.say()                 # Says something in a chat channel
+connector.reply()               # Replies to a user who invoked a command
+connector.whisper()             # Uses private messaging with the user
+connector.getUser()             # Get data about a specific user
+connector.getChannel()          # Get data about a particular channel
+connector.upload()              # Upload a file to the server
+```
+
+The tricky part was going to be how I could make the bot *recieve* messages as well. This ended up being a [thread](https://docs.python.org/3.5/library/threading.html) that just listens on a [socket](https://docs.python.org/3.5/library/socket.html) for new messages.
+
+It was at this point I started hitting a lot of problems with the socket; websocket; and requests libraries. It got really wonky trying to use [SSL](https://en.wikipedia.org/wiki/Transport_Layer_Security) in Python 2.7, so I was forced to upgrade to Python 3.
+
+So now this *""message consumer""* thread would need to actually produce messages in a way the bot can understand and notify the bot that it has received a message. The first iteration of the system was poor; and it was already showing performance issues since this one thread was literally doing all the bot logic. **Bad bad bad**
+
+## Going Multi threaded
+
+I has read that you can get considerable performance gains by using [thread pooling](https://en.wikipedia.org/wiki/Thread_pool). I could get away with this since I don't have to ensure that the bot does things in a 100% FIFO manner. I also thought that; what if a plugin is waiting on an HTTP response from an API? In a single threaded system; he would just be sitting there and no one could interact with it until that request returned. A bot isn't a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) interface per-say.
+
+So now I had to make a class to handle my pool of threads; and I had *never* done any meaningful threaded programming before this.
+
+Python makes this stupidly simple, it has a FIFO queue library that blocks when dequeueing an item. This just means that more than one thread can't take something from the queue at the same time as another. So then it was just as simple as creating a generic `worker` class that would run any function you give it. Python even makes this easy because functions are [first class citizens.](https://en.wikipedia.org/wiki/First-class_function)
+
+Awesome! I just learned a lot about threading and how the OS handles blocking; plus now my bot can be working on many things at once.
+
+## Plugin System
+
+This is where things got super *""meta""*.
+
+I wanted to be able to 'sandbox' plugins from each other; and be able to unload them. Once again, Python allows you do some cool things like dynamically linking code modules at runtime.
+
+I needed a way to manage these plugins. This led to me making a bunch of classes.
+
+* Plugin Superclass
+* Plugin Manager
+* Command Manager
+* Event Manager
+* Decorators (Oh god no)
+
+So obviously; the Plugin manager is what handles the plugins themselves; Loading, unloading, and tracking their loaded instances.
+
+Python has this thing called *metaprogramming*; which allows you to mess with parts of methods and classes. Under the hood; everything is just a `dict` object. You can abuse this by piggy backing on it to pass information around.
+
+This is when I wrote my first decorator. What it does it set flags on a method to say that it is a command; and here is how it is invoked. I could now abstract this from the plugin so the manager could know that this is intended to be a command.
+
+Theres a problem that happens tho; if you hit an exception in a plugin; that threaded worker is now dead. Shit.
+
+So I had to make it so the workers would throw the exception but keep going.
+
+# Tying everything together
+
+The glue that makes the bot work really lies in the `message consumer` thread; which resides in the connector. When it encounters a message from the socket; it queue's up for a threaded worker to pick up, and this worker will check to see if this message is something the bot should respond to.
+
+
+## Gravy features
+
+Getting the core functionality done felt pretty good. The plugin syntax was simple and everything worked very well together; but I felt very limited in what my plugin could do.
+
+### Persistance
+
+This was a tough one; I figured I wanted to use an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping), which basically allows you to use SQL as if it were Python code.
+
+The elephant in the room is [SQL Alchemy](http://www.sqlalchemy.org/), being that it is the most popular standalone ORM for Python. When I investigated it; I found it very clunky and really didn't like it. I considered a few other options until stumbling on [PeeWee](http://docs.peewee-orm.com/en/latest/); which is an extremely lightweight ORM. It had everything I needed without all the fluff.
+
+I abstracted it out a bit; plugins getting their own database file; as well as automatically setting up the database tables and a key value store for them behind the scenes. The less plugin code I have to write; the better.
+
+### Access Control
+
+This depended on persistence obviously; but I quickly found it tedious to have people being able to run any command on my bot. There was no way to restrict who could do what.
+
+I setup ACL's so that each user gets an 'access' rank, -1 to 999. You then specify in your plugins how much access is required to use a particular command. So now I have a `banhammer` command; which only I can use.
+
+
+
+
+# Challenges
+
+There were a lot of gotchas that I fell into; and looks like a lot of Python programmers fall victim to them as well.
+
+I had to do some digging; but it turns out that Python's `thread` library is deprecated, and you're supposed to use the `threading` library instead. Super confusing.
+
+I had the same problem with the websocket library too though; there is a socket library, and several unofficial websocket libraries. The ones I looked at couldn't connect to my Slack server, and they were really clunky to use; but I found someone who was making something similar use a obscure websocket library which works extremely well. (Thank god)
+
+# What I learned
+
+Overall; it has been a good experience. It caused me to touch many many aspects of Python; and get experience with using all these features together.
+
+The thread pool class had me dig into Python's `threading` library. I learned about the best practices for starting, managing and stopping threads; as well as design considerations.
+
+The other classes were more for organization and sanity; but I learned about [list comprehension](http://www.secnetix.de/olli/Python/list_comprehensions.hawk) as well as iterators and iterables. Though I prefer using more explicit code for doing list operations.
+
+I also found out that there is official support for Java-like class declarations. You can create an abstract class, define getters and setters, method overloading, calling the super constructor, etc. Though in Python, it looks very odd in my opinion.
+
+My pub/sub system for events allowed me to learn about how functions/methods are treated on the same level as an `int`, and that there is a buttload of meta classes attached to each function callback, which can tell me things about it. I also played with decorators quite a bit. An interesting little syntactic sugar for Python; I thought it could simplify my plugin system even further, however I couldn't quite figure out how to make it work how I wanted it.
+
+When implementing my `help` command in my basic chat plugin; I learned about the `__docstring__` meta tag, so I could have my code documented in line. Fantastic.
+
+# In Summation...
+
+For anyone who  doesn't do random hacking projects like this; I highly recommend it. I touched quite a bit of Python's breadth and learned a hell of a lot about how everything works in the language.
+
+Most of all, the bot works! Sure, it's not perfect, there are some tweaks that it still needs; like more error handling, edge-case things, etc. But at this point; I would consider it stable enough to run it on my Discord server.","<p>Lately I've been reading and hearing a lot about  Chat Ops. It's essentially a DevOp's practice started by <strong>Github</strong> which uses a chat service like <em>Hipchat</em> or <em>Slack</em> with a bot user to manage their team and infrastructure.</p>
