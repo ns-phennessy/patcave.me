@@ -10,38 +10,6 @@ summary: Now that we know who you are, I know who I am. I'm not a mistake! It al
 ---
 body:
 
-# Intro
-
-Hi Im patrick; this is some filler text
-
-Here is a nice list:
-
-* Stuff
-* More things
-* Yyeah
-
-`this is a line`
-
-## Here is some sample code I wrote:
-
-```python
-#!/usr/bin/python3
-
-from flask import Flask
-app = Flask(__name__)
-
-@app.route("/")
-def hello():
-    return "Hello World!"
-```
-
-Now that we know who you are, I know who I am. I'm not a mistake! It all makes sense! In a comic, you know how you can tell who the arch-villain's going to be? He's the exact opposite of the hero. And most times they're friends, like you and me! I should've known way back when... You know why, David? Because of the kids. They called me Mr Glass.
-
->  In a comic, you know how you can tell who the arch-villain's going to be?
->
-> \- _Famous person_
-
-The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.
 
 # Heading 1
 ## Heading 2
@@ -61,3 +29,53 @@ __bold as love__
 https://patcave.me/link
 
 [A link here](https://patcave.me/)
+
+# Lists
+
+A nice list:
+* Potatos
+* Beans greens
+* Carrots
+
+A ordered list:
+1. Get a pound of cream cheese and a cactus
+2. Enter bathtub with items
+3. ????
+4. Profit
+
+# A horizatonal line
+
+some text
+
+------
+
+more text
+
+# Table
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | yeeee         | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+
+# Code
+```python
+#!/usr/bin/python3
+
+from flask import Flask
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return "Hello World!"
+```
+
+
+# Quoting
+
+The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.
+
+>  In a comic, you know how you can tell who the arch-villain's going to be?
+>
+> \- _Famous person_

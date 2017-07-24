@@ -1,4 +1,4 @@
-title: Thinking about a release oriented Git workflow
+title: Git workflow's and continuous deployment
 ---
 _model: post
 ---
@@ -6,12 +6,54 @@ cover_image: cover.png
 ---
 date: 2016-12-16
 ---
-summary: Some of my thoughts on how to setup a Git workflow focued on releases and versioning of
-software projects
+summary: My thoughts on how to setup a workable Git workflow focused on releases and versioning of
+software projects which allows for continuous integration / deployment, while not causing developers
+to go insane.
 ---
 body:
 
-# Common Git Workflows
+
+In the article I'll talk about various methods of using Git as a tool for teams to collaborate. I
+have personally used parts from every one of these workflows throughout my career.
+
+First we should talk about versioning
+
+# What is a version of software?
+
+A version of software is just a bundle of code at some point in history. In terms of
+Git, this can literally be commits. In a manner of speaking; every commit is a version of the
+code. However you *may* not want to publish every commit directly to production.
+
+So we could simply expand on that definition and say that a version is just a commit we decide is
+something *could* release. Perhaps then a "version" is a [build](https://en.wikipedia.org/wiki/Software_build)
+with a human-comprehendible number attached to it.
+
+Versions can quite literally be serial numbers, the actual numbers don't *have* to mean anything.
+However wouldn't it be nice if there was a way to tell potential uses of your library or software
+what *type* of changes are going into a new version?
+
+#### Enter [Semantic Versioning](http://semver.org/) (also known as semver)
+
+It defines a scheme for what version numbers should mean and heres what it looks like:
+
+`major.minor.micro`
+
+*Example*: Postgres v9.4.5
+
+* A change to *Major* means you are introducing one or more backwards incompatible changes to your code
+and consumers of your software should be aware of this fact. It would be in your best interest to publish
+release notes and migration path for this.
+* Bumping *Minor* means that we are introducing a new set of features and bug fixes, but make the
+guarantee that our code will work with older versions in our same major version.
+* Micro is a lot more flexible; and could just mean new code is added but not really anything releaseable.
+
+Of course there are many version scheme's out there. As an author of code, you should publish this
+information somewhere so users of your software aren't confused. putting it in the README is totally
+acceptable.
+
+
+
+# Popular Git Workflows
 
 ## Trunk focused
 
@@ -20,25 +62,25 @@ of `trunk` / `master`. It is by far the simplest to understand since developers 
 and push directly to master.
 
 #### Pros
-
-* Easy to understand
+* Strait forward and easy to understand
 * Doesn't require any special setup before hand
-* Ideal for very small teams or individuals working on pet projects
+* Ideal for very small teams or individuals working on small projects
 
 #### Cons
-
 * Merge conflicts would become a train-wreck
 * Force pushing would have to be disabled otherwise any developer could rewrite the tree and history
 would be always in-flux
 * No code-review process
     * This could be fine if you are implementing something like
-    [paired programming](https://en.wikipedia.org/wiki/Pair_programming)
-    since you would always have at least 2 sets of eyes on the code.
-
+    [paired programming](https://en.wikipedia.org/wiki/Pair_programming) since you would always have
+    at least 2 sets of eyes on the code.
+------
 
 ## Feature branching
 
 This is by far the most popular branching strategy among agile development teams.
+
+![fb](feature-branch.svg)
 
 1. Bob wants to work on **Feature 1**
 2. Do a `git pull` from `master` to get up to the latest stable code
@@ -52,58 +94,52 @@ This is by far the most popular branching strategy among agile development teams
     * Once a code maintainer or project lead approves this change, Bob can then merge the code back
     to `master`
 
-
 #### Pros
-
 * New features or changes can be thoroughly reviewed before making it to `master`
 * Enables automated testing
 
 #### Cons
-
 * Long lived branches can become a mess of merge conflicts
 * Without rebasing, Bob will inter-mix several commits into `master` tree.
 Thankfully Github has added a [squash feature](https://github.com/blog/2141-squash-your-commits) to
 make this easy
 
+-----
+
+## Release branching
+
+Typically I've seen this done along side feature branching model. Every time the maintainer feels
+comfortable calling a bunch of commits a 'version', it gets a version branch. This branch will be
+a candidate for release. As the code goes through it's testing (unit, functional, regression, manual);
+If major bugs are discovered, then that branch will need to get fixes pushed to it. Ideally no new
+features would be pushed to a release branch once it has been created.
+
+![rb](release-branch.svg)
 
 
-# But what about versions and releases?
+#### Pros
+* Doesn't make an opinion about how commits make it to master, but pairs nicely with feature branching
+* Makes a clean and clear track for what a 'version' is in the eyes of Git.
+* Git does have the ability to apply the same diff to multiple bases. See: [git cherry pick](https://git-scm.com/docs/git-cherry-pick)
 
-Both the above strategies are missing something though; it says nothing and makes no opinion about
-versioning.
+#### Cons
+* Any fix needs to be applied to both the release branch, and master; AND if it's a major bug, one
+may have to apply that patch to many previous release branches as well.
+*
+*
 
-There is an elusive question that is often missed when talking about branching strategy; what is a
-version of **Software X**? This might sound like a dumb question at face value; but it is important
-to define what a version means to your individual project.
+## Build branching
 
-Really a version of software is just a bundle of code at some point in history. In terms of
-Git, this can literally be commits. Infact in a manner of speaking; every commit is a version of the
-code. However you *may* not want to publish every commit directly to production.
+This is something that I came up with while working at [NarrativeScience](https://narrativescience.com/)
+and is a variation of [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow).
 
-So we could simply expand on that definition and say that a "version" is just a commit we decide is
-something *could* release. Perhaps then a "version" is a [build](https://en.wikipedia.org/wiki/Software_build)
-with a human-comprehendable number attached to it.
-
-Okay so lets talk about versioning then
-
-### Semantic Versioning
-
-[Semantic Versioning](http://semver.org/) (also known as semver) defines a scheme for what version
-numbers should mean. Heres what it looks like:
-
-`major`.`minor`.`micro`
-
-* A change to *Major* means you are introducing one or more backwards incompatible changes to your code
-and consumers of your software should be aware of this fact. It would be in your best interest to publish
-release notes for this.
-* Bumping *Minor* means that we are introducing a new set of features and bug fixes, but make the
-guarantee that our code will work with older versions in our same major version.
-* Micro is a lot more flexible; this is what I would say is just a build of the software.
+The idea is that we introduce another a new branch called the *build* branch. It's responsiblity is
+to manage built versions of the software.
 
 
-### Versioning and Git
 
-Okay so if we have a well defined version scheme, how do we relate Git concepts to that?
+
+
 
 Anytime you want to bump the `micro` version of the software; you *must* run a
 [build](https://en.wikipedia.org/wiki/Software_build). This build includes running unit, functional,
