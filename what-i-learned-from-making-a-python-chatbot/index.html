@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <!-- CSS -->
+        <link rel="stylesheet" href="../static/style.min.css">
+        <link rel="stylesheet" href="../static/pygments.css">
+        <link rel="shortcut icon" href="../static/favicon.png">
+
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,700,700italic">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="../static/icon.css">
+        <script src="../static/icon.min.js"></script>
+
+        <title>The Patcave - What I learned from making a Python chatbot framework</title>
+    </head>
+    <body>
+        <header>
+            <h1>The Patcave</h1>
+            <nav class="social">
+                <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
+                    <svg class="icon linkedin"><use xlink:href="/static/icons.svg#linkedin"></use></svg>
+                </a>
+                <a href="https://github.com/ns-phennessy" target="_blank">
+                    <svg class="icon github2"><use xlink:href="/static/icons.svg#github2"></use></svg>
+                </a>
+                <a href="#" target="_blank">
+                    <svg class="icon rss"><use xlink:href="/static/icons.svg#rss"></use></svg>
+                </a>
+            </nav>
+            <nav>
+                <a href="/">Blog</a>
+                <a href="/about/">About</a>
+                <a href="mailto:phennessy517@gmail.com">Contact</a>
+            </nav>
+        </header>
+        <main>
+            
+    <header>
+        <h1 id="title">What I learned from making a Python chatbot framework</h1>
+        <time>September 6, 2015</time>
+        <a href="https://github.com/ns-phennessy/patcave.me/tree/master/content/what-i-learned-from-making-a-python-chatbot/contents.lr" class="button button-clear">
+            <svg class="icon pencil2"><use xlink:href="/static/icons.svg#pencil2"></use></svg>&nbsp;
+            Edit on Github
+        </a>
+
+        
+            <img src="cover.png" alt="">
+        
+    </header>
+
+    <article>
+        <h1 id="intro">Intro</h1><p>Lately I've been reading and hearing a lot about <a href="https://www.pagerduty.com/blog/what-is-chatops/">Chat Ops</a>.
+It's a practice started by Github which uses a chat service like <em>Hipchat</em> or <em>Slack</em> with a bot user to provide feedback and insights into their infrastructure.</p>
+<p>This is super cool because it allows for transparency in to what you're doing at any given time.
+Very useful in a high stress situation, like a big production failure where multiple engineers are trying to fix it;
+they can easily coordinate their efforts and not have to tell everyone what they're doing right that second because everyone can see it.</p>
+<h1 id="motivations">Motivations</h1><p>When I was younger, I played in the early days of <strong>Starcraft 1</strong> and <strong>Diablo II</strong>. To play online; you had an IRC like client called Battle.Net, and there were bots galore. Thanks to our collective knowledge; the clan I was in at the time, we became the top clan in Diablo. One of the services we ran was a trivia bot, which is half the reason people came to our channel. The other was the exp runs they could get from it.</p>
+<p>Ever since getting on these modern chat services, I wanted a bot that I built entirely on my own. So my initial idea was to build a trivia bot. It used webhooks; and I did everything synchronously with some simple HTTP-server library. It worked; but was far from an ideal implementation.</p>
+<p>But I did have an awesome name for it: <strong><em>Regis Philbot</em></strong>, after the infamous Who Want's to be a Millionaire host; so of course I wanted to make the bot as cool as the name.</p>
+<h1 id="the-first-iteration">The first iteration</h1><p>While there were many bots already out there; I wanted the challenge of building it myself from scratch. I made the decision to use Python, which I was still sort of new to at the time (but so glad I did).</p>
+<p>My initial design was poor; not thought out at all. I guess I just wanted to see if I could even get it to work at all. I did get it working; but it was very buggy and unstable.</p>
+<p>I had started using <a href="http://discordapp.com">Discord</a> chat / voice service for some of my gaming friends and I, and I wanted to get a bot in there to have fun with. So started rewriting the bot from scratch and began the process of reverse engineering the Discord API. (This was fairly easy since Discord is a web based client)</p>
+<p><img src="https://omundy.files.wordpress.com/2012/04/i-will-not-write-any-more-bad-code.gif" alt=""></p>
+<h1 id="super-object-oriented-python-master-race">Super Object Oriented Python Master Race</h1><p>I didn't have the whole design in my head when I started; but my goal was to create a simple to use API for plugins, so that you can write a plugin that does stuff. To facilitate this; I started with a <code>Core</code> object.</p>
+<h2 id="core">Core</h2><p>In <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object oriented programming</a> terms, the <code>Core</code> uses <em>composition</em>. So then the question is; what things should the core allow us to do?</p>
+<p>Heres what I came up with:</p>
+<ul>
+<li>Connect / Disconnect to chat service</li>
+<li>Manage the Bot config</li>
+<li>Handle plugins</li>
+<li>Broker events</li>
+</ul>
+<h2 id="connector">Connector</h2><p>The connector class is the bot's interface to the chat service; in this case, I was using <a href="https://discordapp.com/">Discord</a>.</p>
+<p>This class was a good opportunity to use an <strong><a href="https://en.wikipedia.org/wiki/Protocol_(object-oriented_programming">interface</a>)</strong>. So then we ask; what does the bot need to be able to do with the chat service? What things are common operations among all modern chat services?</p>
+<p>I created a number of methods to abstract this:</p>
+<div class="highlight"><pre><span></span><span class="n">connector</span><span class="o">.</span><span class="n">say</span><span class="p">()</span>                 <span class="c1"># Says something in a chat channel</span>
+<span class="n">connector</span><span class="o">.</span><span class="n">reply</span><span class="p">()</span>               <span class="c1"># Replies to a user who invoked a command</span>
+<span class="n">connector</span><span class="o">.</span><span class="n">whisper</span><span class="p">()</span>             <span class="c1"># Uses private messaging with the user</span>
+<span class="n">connector</span><span class="o">.</span><span class="n">getUser</span><span class="p">()</span>             <span class="c1"># Get data about a specific user</span>
+<span class="n">connector</span><span class="o">.</span><span class="n">getChannel</span><span class="p">()</span>          <span class="c1"># Get data about a particular channel</span>
+<span class="n">connector</span><span class="o">.</span><span class="n">upload</span><span class="p">()</span>              <span class="c1"># Upload a file to the server</span>
+</pre></div>
+<p>The tricky part was going to be how I could make the bot <em>recieve</em> messages as well. This ended up being a <a href="https://docs.python.org/3.5/library/threading.html">thread</a> that just listens on a <a href="https://docs.python.org/3.5/library/socket.html">socket</a> for new messages.</p>
+<p>It was at this point I started hitting a lot of problems with the socket; websocket; and requests libraries. It got really wonky trying to use <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security">SSL</a> in Python 2.7, so I was forced to upgrade to Python 3.</p>
+<p>So now this <em>""message consumer""</em> thread would need to actually produce messages in a way the bot can understand and notify the bot that it has received a message. The first iteration of the system was poor; and it was already showing performance issues since this one thread was literally doing all the bot logic. <strong>Bad bad bad</strong></p>
+<h2 id="going-multi-threaded">Going Multi threaded</h2><p>I has read that you can get considerable performance gains by using <a href="https://en.wikipedia.org/wiki/Thread_pool">thread pooling</a>. I could get away with this since I don't have to ensure that the bot does things in a 100% FIFO manner. I also thought that; what if a plugin is waiting on an HTTP response from an API? In a single threaded system; he would just be sitting there and no one could interact with it until that request returned. A bot isn't a <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a> interface per-say.</p>
+<p>So now I had to make a class to handle my pool of threads; and I had <em>never</em> done any meaningful threaded programming before this.</p>
+<p>Python makes this stupidly simple, it has a FIFO queue library that blocks when dequeueing an item. This just means that more than one thread can't take something from the queue at the same time as another. So then it was just as simple as creating a generic <code>worker</code> class that would run any function you give it. Python even makes this easy because functions are <a href="https://en.wikipedia.org/wiki/First-class_function">first class citizens.</a></p>
+<p>Awesome! I just learned a lot about threading and how the OS handles blocking; plus now my bot can be working on many things at once.</p>
+<h2 id="plugin-system">Plugin System</h2><p>This is where things got super <em>""meta""</em>.</p>
+<p>I wanted to be able to 'sandbox' plugins from each other; and be able to unload them. Once again, Python allows you do some cool things like dynamically linking code modules at runtime.</p>
+<p>I needed a way to manage these plugins. This led to me making a bunch of classes.</p>
+<ul>
+<li>Plugin Superclass</li>
+<li>Plugin Manager</li>
+<li>Command Manager</li>
+<li>Event Manager</li>
+<li>Decorators (Oh god no)</li>
+</ul>
+<p>So obviously; the Plugin manager is what handles the plugins themselves; Loading, unloading, and tracking their loaded instances.</p>
+<p>Python has this thing called <em>metaprogramming</em>; which allows you to mess with parts of methods and classes. Under the hood; everything is just a <code>dict</code> object. You can abuse this by piggy backing on it to pass information around.</p>
+<p>This is when I wrote my first decorator. What it does it set flags on a method to say that it is a command; and here is how it is invoked. I could now abstract this from the plugin so the manager could know that this is intended to be a command.</p>
+<p>Theres a problem that happens tho; if you hit an exception in a plugin; that threaded worker is now dead. Shit.</p>
+<p>So I had to make it so the workers would throw the exception but keep going.</p>
+<h1 id="tying-everything-together">Tying everything together</h1><p>The glue that makes the bot work really lies in the <code>message consumer</code> thread; which resides in the connector. When it encounters a message from the socket; it queue's up for a threaded worker to pick up, and this worker will check to see if this message is something the bot should respond to.</p>
+<h2 id="gravy-features">Gravy features</h2><p>Getting the core functionality done felt pretty good. The plugin syntax was simple and everything worked very well together; but I felt very limited in what my plugin could do.</p>
+<h3 id="persistance">Persistance</h3><p>This was a tough one; I figured I wanted to use an <a href="https://en.wikipedia.org/wiki/Object-relational_mapping">ORM</a>, which basically allows you to use SQL as if it were Python code.</p>
+<p>The elephant in the room is <a href="http://www.sqlalchemy.org/">SQL Alchemy</a>, being that it is the most popular standalone ORM for Python. When I investigated it; I found it very clunky and really didn't like it. I considered a few other options until stumbling on <a href="http://docs.peewee-orm.com/en/latest/">PeeWee</a>; which is an extremely lightweight ORM. It had everything I needed without all the fluff.</p>
+<p>I abstracted it out a bit; plugins getting their own database file; as well as automatically setting up the database tables and a key value store for them behind the scenes. The less plugin code I have to write; the better.</p>
+<h3 id="access-control">Access Control</h3><p>This depended on persistence obviously; but I quickly found it tedious to have people being able to run any command on my bot. There was no way to restrict who could do what.</p>
+<p>I setup ACL's so that each user gets an 'access' rank, -1 to 999. You then specify in your plugins how much access is required to use a particular command. So now I have a <code>banhammer</code> command; which only I can use.</p>
+<h1 id="challenges">Challenges</h1><p>There were a lot of gotchas that I fell into; and looks like a lot of Python programmers fall victim to them as well.</p>
+<p>I had to do some digging; but it turns out that Python's <code>thread</code> library is deprecated, and you're supposed to use the <code>threading</code> library instead. Super confusing.</p>
+<p>I had the same problem with the websocket library too though; there is a socket library, and several unofficial websocket libraries. The ones I looked at couldn't connect to my Slack server, and they were really clunky to use; but I found someone who was making something similar use a obscure websocket library which works extremely well. (Thank god)</p>
+<h1 id="what-i-learned">What I learned</h1><p>Overall; it has been a good experience. It caused me to touch many many aspects of Python; and get experience with using all these features together.</p>
+<p>The thread pool class had me dig into Python's <code>threading</code> library. I learned about the best practices for starting, managing and stopping threads; as well as design considerations.</p>
+<p>The other classes were more for organization and sanity; but I learned about <a href="http://www.secnetix.de/olli/Python/list_comprehensions.hawk">list comprehension</a> as well as iterators and iterables. Though I prefer using more explicit code for doing list operations.</p>
+<p>I also found out that there is official support for Java-like class declarations. You can create an abstract class, define getters and setters, method overloading, calling the super constructor, etc. Though in Python, it looks very odd in my opinion.</p>
+<p>My pub/sub system for events allowed me to learn about how functions/methods are treated on the same level as an <code>int</code>, and that there is a buttload of meta classes attached to each function callback, which can tell me things about it. I also played with decorators quite a bit. An interesting little syntactic sugar for Python; I thought it could simplify my plugin system even further, however I couldn't quite figure out how to make it work how I wanted it.</p>
+<p>When implementing my <code>help</code> command in my basic chat plugin; I learned about the <code>__docstring__</code> meta tag, so I could have my code documented in line. Fantastic.</p>
+<h1 id="in-summation...">In Summation...</h1><p>For anyone who  doesn't do random hacking projects like this; I highly recommend it. I touched quite a bit of Python's breadth and learned a hell of a lot about how everything works in the language.</p>
+<p>Most of all, the bot works! Sure, it's not perfect, there are some tweaks that it still needs; like more error handling, edge-case things, etc. But at this point; I would consider it stable enough to run it on my Discord server.","<p>Lately I've been reading and hearing a lot about  Chat Ops. It's essentially a DevOp's practice started by <strong>Github</strong> which uses a chat service like <em>Hipchat</em> or <em>Slack</em> with a bot user to manage their team and infrastructure.</p></p>
+
+    </article>
+
+        </main>
+        <footer>
+            <hr>
+            <span>&copy; Patrick Hennessy <em>2015 - 2018</em><span>
+        </footer>
+    </body>
+</html>

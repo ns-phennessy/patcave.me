@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <!-- CSS -->
+        <link rel="stylesheet" href="../static/style.min.css">
+        <link rel="stylesheet" href="../static/pygments.css">
+        <link rel="shortcut icon" href="../static/favicon.png">
+
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,700,700italic">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="../static/icon.css">
+        <script src="../static/icon.min.js"></script>
+
+        <title>The Patcave - Setting up a secure Linux server</title>
+    </head>
+    <body>
+        <header>
+            <h1>The Patcave</h1>
+            <nav class="social">
+                <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
+                    <svg class="icon linkedin"><use xlink:href="/static/icons.svg#linkedin"></use></svg>
+                </a>
+                <a href="https://github.com/ns-phennessy" target="_blank">
+                    <svg class="icon github2"><use xlink:href="/static/icons.svg#github2"></use></svg>
+                </a>
+                <a href="#" target="_blank">
+                    <svg class="icon rss"><use xlink:href="/static/icons.svg#rss"></use></svg>
+                </a>
+            </nav>
+            <nav>
+                <a href="/">Blog</a>
+                <a href="/about/">About</a>
+                <a href="mailto:phennessy517@gmail.com">Contact</a>
+            </nav>
+        </header>
+        <main>
+            
+    <header>
+        <h1 id="title">Setting up a secure Linux server</h1>
+        <time>May 22, 2014</time>
+        <a href="https://github.com/ns-phennessy/patcave.me/tree/master/content/setting-up-a-secure-linux-server/contents.lr" class="button button-clear">
+            <svg class="icon pencil2"><use xlink:href="/static/icons.svg#pencil2"></use></svg>&nbsp;
+            Edit on Github
+        </a>
+
+        
+            <img src="cover.jpg" alt="">
+        
+    </header>
+
+    <article>
+        <h1 id="overview">Overview</h1><p>This is not a comprehensive guide; but should get you started and prevent you from getting pwned immediately.</p>
+<p>Following these small steps will make you a much harder target to compromise, and are probably not worth most hackers time.</p>
+<p>There are a lot of automated attacks going around and hitting known server cluster IP ranges looking for low hanging fruit and vulnerable servers they can exploit.</p>
+<h1 id="creating-a-droplet">Creating a Droplet</h1><p>DigitalOcean makes it very simple to create a droplet. Once you have an account, create a droplet</p>
+<ul>
+<li><strong>Name</strong>: Name your droplet whatever you want. This will become the <strong>hostname</strong> on the machine itself once it's created.</li>
+<li><strong>Size</strong>: Go for the cheapest one. The most it will charge you is $5 / month (a very good deal imo).</li>
+<li><strong>Location</strong>: I've found that the New York location is rather slow for me, so I usually opt for the San Francisco location.</li>
+<li><p><strong>Image</strong>: Most people will be comfortable with Ubuntu; so we will select that.</p>
+<p>Also important to note; you should opt for using <a href="https://wiki.ubuntu.com/LTS">LTS</a> releases since they're supported for a while.</p>
+</li>
+</ul>
+<h1 id="login">Login</h1><p>Once created; DigitalOcean will e-mail you your new login credentials.</p>
+<h2 id="from-a-terminal-osx-or-linux">From a Terminal (OSX or Linux)</h2><p>Open a terminal window and type in the following command:</p>
+<div class="highlight"><pre><span></span>ssh root@ipaddress
+</pre></div>
+<p>It will prompt for a password; enter the one sent to your email.</p>
+<h2 id="from-putty-windows">From Putty (Windows)</h2><p>Download <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html">PuTTy</a> if you don't have it already. PuTTy will simulate a terminal session similar to that on a Linux or OSX system.</p>
+<p>Put in the supplied ip-address in the <code>hostname</code> field, and leave the port on <code>22</code>. Then click connect.</p>
+<p>You will be prompted for your password; feel free to copy and paste it from the email directly. If you did everything right; you should now be logged into your DigitalOcean node as the root user!</p>
+<h1 id="installing-updates">Installing Updates</h1><p>The first thing you should do is bring all your software up to date.</p>
+<p>DigitalOcean does pretty well keeping their images up to date; but you want to get in the habit of having the freshest updates to software on your system.</p>
+<p>Use the following commands:</p>
+<div class="highlight"><pre><span></span>apt-get update
+apt-get upgrade
+</pre></div>
+<p><strong>update</strong> will hit all the <a href="https://help.ubuntu.com/community/Repositories/Ubuntu">Ubuntu repositories</a> and refresh any package names or versions.</p>
+<p><strong>upgrade</strong> will upgrade any out of date packages and remove anything that is now unnecessary on your system.</p>
+<h1 id="disabling-root-access">Disabling Root Access</h1><p>It's a good idea to disable root user logins via SSH. Root is allowed to do literally anything on a system, so it's a dangerous account.</p>
+<h2 id="add-an-admin-sudo-account">Add an admin (sudo) account</h2><p>A <strong>sudo</strong> user is a user on a Linux system who as the ability to perform certain root-level operations after a password prompt.
+<em>You should only give <code>sudo</code> access to users who absolutely need it.</em></p>
+<p>Use the following command to add a new sudoer:</p>
+<div class="highlight"><pre><span></span>useradd -g sudo -s /bin/bash pat
+</pre></div>
+<p>It will prompt you for a password and email; put whatever you like there (it can be changed later if desired).</p>
+<p>Once done; I would <strong><em>highly</em></strong> recommend starting another terminal or PuTTy session and logging in as this user to verify that you're able to login. The last thing you want is to lock yourself out.</p>
+<h2 id="disable-root-login-over-ssh">Disable Root Login over SSH</h2><p>Next you'll need to stop the root user from logging in at all.</p>
+<div class="highlight"><pre><span></span>vim /etc/ssh/sshd_config
+</pre></div>
+<p>Look for a line that says <code>PermitRootLogin</code> and set it to <code>no</code></p>
+<p>Then reset the SSH server:</p>
+<div class="highlight"><pre><span></span>systemctl restart sshd
+</pre></div>
+<h1 id="firewall">Firewall</h1><p>Another important thing to do is to stop automated port scanning attacks on your server.
+At the moment, we are only using a single port for our communications, <em>22</em> for SSH.
+A <a href="http://en.wikipedia.org/wiki/Firewall_%28computing%29">firewall</a> can stop other hosts from connecting to those ports, hogging up system resources, and potentially exploiting unknown vulnerabilities.</p>
+<p>You should tune the rules to your liking, but heres a good <a href="https://gist.github.com/ns-phennessy/5a3b60e41022748f5f68">boilerplate</a> to start from</p>
+<div class="highlight"><pre><span></span>wget https://gist.githubusercontent.com/ns-phennessy/5a3b60e41022748f5f68/raw/e9e96a793dd5668b8568a437e083594318a41c86/Firewall%20Script
+chmod +x Firewall<span class="se">\ </span>Script
+sudo bash Firewall<span class="se">\ </span>Script
+</pre></div>
+<p>The script will setup sensible defaults and leave port 22 open.
+<strong>IT IS VERY IMPORTANT TO NEVER CLOSE PORT 22</strong>.
+You <em>will</em> lock yourself out of your system if you do this.</p>
+<h1 id="fail2ban">Fail2Ban</h1><p><a href="http://en.wikipedia.org/wiki/Fail2ban">Fail2Ban</a> is a <a href="http://en.wikipedia.org/wiki/Daemon_%28computing%29">daemon</a> that follows the authentication log and see if any IP address has too many failed login attempts, and temporarily bans them.</p>
+<p>Install it and setup default config:</p>
+<div class="highlight"><pre><span></span>sudo apt-get install fail2ban
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+</pre></div>
+<p>You can now go and tweak your jail settings.</p>
+<div class="highlight"><pre><span></span>sudo vim /etc/fail2ban/jail.local
+</pre></div>
+<p>I like to set my <code>bantime</code> ridiculously high but give myself a <code>maxretry</code> of at least 5 over a <code>findtime</code> of about 10 minutes.</p>
+<p>Remember that the goal is to catch brute force attacks, you need to be aware that your rules will have to reflect the kind of traffic you're seeing. A smart attacker will brute force your system slowly to avoid getting caught up in filters like this one.</p>
+<h1 id="done">Done!</h1><p>Congrats, you're setup and had your first taste with server security.
+Hopefully this article has given you some insight into how to setup and maintain a Linux server and not get immediately hacked</p>
+
+    </article>
+
+        </main>
+        <footer>
+            <hr>
+            <span>&copy; Patrick Hennessy <em>2015 - 2018</em><span>
+        </footer>
+    </body>
+</html>

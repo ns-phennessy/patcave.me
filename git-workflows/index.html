@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+    <head>
+        <!-- CSS -->
+        <link rel="stylesheet" href="../static/style.min.css">
+        <link rel="stylesheet" href="../static/pygments.css">
+        <link rel="shortcut icon" href="../static/favicon.png">
+
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web:300,300italic,700,700italic">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+        <link rel='stylesheet' href='//cdn.jsdelivr.net/font-hack/2.020/css/hack.min.css'>
+
+        <!-- Icons -->
+        <link rel="stylesheet" href="../static/icon.css">
+        <script src="../static/icon.min.js"></script>
+
+        <title>The Patcave - Git workflow&#39;s and continuous deployment</title>
+    </head>
+    <body>
+        <header>
+            <h1>The Patcave</h1>
+            <nav class="social">
+                <a href="https://www.linkedin.com/in/pmhennessy/" target="_blank">
+                    <svg class="icon linkedin"><use xlink:href="/static/icons.svg#linkedin"></use></svg>
+                </a>
+                <a href="https://github.com/ns-phennessy" target="_blank">
+                    <svg class="icon github2"><use xlink:href="/static/icons.svg#github2"></use></svg>
+                </a>
+                <a href="#" target="_blank">
+                    <svg class="icon rss"><use xlink:href="/static/icons.svg#rss"></use></svg>
+                </a>
+            </nav>
+            <nav>
+                <a href="/">Blog</a>
+                <a href="/about/">About</a>
+                <a href="mailto:phennessy517@gmail.com">Contact</a>
+            </nav>
+        </header>
+        <main>
+            
+    <header>
+        <h1 id="title">Git workflow&#39;s and continuous deployment</h1>
+        <time>December 16, 2016</time>
+        <a href="https://github.com/ns-phennessy/patcave.me/tree/master/content/git-workflows/contents.lr" class="button button-clear">
+            <svg class="icon pencil2"><use xlink:href="/static/icons.svg#pencil2"></use></svg>&nbsp;
+            Edit on Github
+        </a>
+
+        
+            <img src="cover.png" alt="">
+        
+    </header>
+
+    <article>
+        <h1 id="intro">Intro</h1><p>In the article I'll talk about various methods of using Git as a tool for teams to collaborate. I
+have personally used parts from every one of these workflows throughout my career.</p>
+<p>First we should talk about versioning</p>
+<h1 id="what-is-a-version-of-software?">What is a version of software?</h1><p>A version of software is just a bundle of code at some point in history. In terms of
+Git, this can literally be commits. In a manner of speaking; every commit is a version of the
+code. However you <em>may</em> not want to publish every commit directly to production.</p>
+<p>So we could simply expand on that definition and say that a version is just a commit we decide is
+something <em>could</em> release. Perhaps then a "version" is a <a href="https://en.wikipedia.org/wiki/Software_build">build</a>
+with a human-comprehendible number attached to it.</p>
+<p>Versions can quite literally be serial numbers, the actual numbers don't <em>have</em> to mean anything.
+However wouldn't it be nice if there was a way to tell potential uses of your library or software
+what <em>type</em> of changes are going into a new version?</p>
+<h4 id="enter-[semantic-versioning]-http://semver.org/-also-known-as-semver">Enter <a href="http://semver.org/">Semantic Versioning</a> (also known as semver)</h4><p>It defines a scheme for what version numbers should mean and heres what it looks like:</p>
+<p><code>major.minor.micro</code></p>
+<p><em>Example</em>: Postgres v9.4.5</p>
+<ul>
+<li>A change to <em>Major</em> means you are introducing one or more backwards incompatible changes to your code
+and consumers of your software should be aware of this fact. It would be in your best interest to publish
+release notes and migration path for this.</li>
+<li>Bumping <em>Minor</em> means that we are introducing a new set of features and bug fixes, but make the
+guarantee that our code will work with older versions in our same major version.</li>
+<li>Micro is a lot more flexible; and could just mean new code is added but not really anything releaseable.</li>
+</ul>
+<p>Of course there are many version scheme's out there. As an author of code, you should publish this
+information somewhere so users of your software aren't confused. putting it in the README is totally
+acceptable.</p>
+<h1 id="popular-git-workflows">Popular Git Workflows</h1><h2 id="trunk-focused">Trunk focused</h2><p>This comes mostly from the SVN and CVS worlds. Essentially it's just that everyone always works off
+of <code>trunk</code> / <code>master</code>. It is by far the simplest to understand since developers just constantly pull
+and push directly to master.</p>
+<h4 id="pros">Pros</h4><ul>
+<li>Strait forward and easy to understand</li>
+<li>Doesn't require any special setup before hand</li>
+<li>Ideal for very small teams or individuals working on small projects</li>
+</ul>
+<h4 id="cons">Cons</h4><ul>
+<li>Merge conflicts would become a train-wreck</li>
+<li>Force pushing would have to be disabled otherwise any developer could rewrite the tree and history
+would be always in-flux</li>
+<li>No code-review process<ul>
+<li>This could be fine if you are implementing something like
+<a href="https://en.wikipedia.org/wiki/Pair_programming">paired programming</a> since you would always have
+at least 2 sets of eyes on the code.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="feature-branching">Feature branching</h2><p>This is by far the most popular branching strategy among agile development teams.</p>
+<p><img src="../git-workflows/feature-branch.svg" alt="fb"></p>
+<ol>
+<li>Bob wants to work on <strong>Feature 1</strong></li>
+<li>Do a <code>git pull</code> from <code>master</code> to get up to the latest stable code</li>
+<li>Create a new 'feature' branch</li>
+<li>Change things at will and save that work by making commits to that branch</li>
+<li>It is Bob's responsibility to resolve any merge conflicts that arise over the course of time</li>
+<li>When <strong>Feature 1</strong> is ready to merge...<ul>
+<li>Bob will create a <a href="https://help.github.com/articles/about-pull-requests">pull request</a></li>
+<li>Bob will run automated tests against this code with a CI server like <a href="https://travis-ci.org/">Travis</a></li>
+<li>If tests pass; Bob asks his fellow developers for a code review</li>
+<li>Once a code maintainer or project lead approves this change, Bob can then merge the code back
+to <code>master</code></li>
+</ul>
+</li>
+</ol>
+<h4 id="pros">Pros</h4><ul>
+<li>New features or changes can be thoroughly reviewed before making it to <code>master</code></li>
+<li>Enables automated testing</li>
+</ul>
+<h4 id="cons">Cons</h4><ul>
+<li>Long lived branches can become a mess of merge conflicts</li>
+<li>Without rebasing, Bob will inter-mix several commits into <code>master</code> tree.
+Thankfully Github has added a <a href="https://github.com/blog/2141-squash-your-commits">squash feature</a> to
+make this easy</li>
+</ul>
+<hr>
+<h2 id="release-branching">Release branching</h2><p>Typically I've seen this done along side feature branching model. Every time the maintainer feels
+comfortable calling a bunch of commits a 'version', it gets a version branch. This branch will be
+a candidate for release. As the code goes through it's testing (unit, functional, regression, manual);
+If major bugs are discovered, then that branch will need to get fixes pushed to it. Ideally no new
+features would be pushed to a release branch once it has been created.</p>
+<p><img src="../git-workflows/release-branch.svg" alt="rb"></p>
+<h4 id="pros">Pros</h4><ul>
+<li>Doesn't make an opinion about how commits make it to master, but pairs nicely with feature branching</li>
+<li>Makes a clean and clear track for what a 'version' is in the eyes of Git.</li>
+<li>Git does have the ability to apply the same diff to multiple bases. See: <a href="https://git-scm.com/docs/git-cherry-pick">git cherry pick</a></li>
+</ul>
+<h4 id="cons">Cons</h4><ul>
+<li>Any fix needs to be applied to both the release branch, and master; AND if it's a major bug, one
+may have to apply that patch to many previous release branches as well.
+<em></em></li>
+</ul>
+<h2 id="build-branching">Build branching</h2><p>This is something that I came up with while working at <a href="https://narrativescience.com/">NarrativeScience</a>
+and is a variation of <a href="https://www.atlassian.com/git/tutorials/comparing-workflows#gitflow-workflow">Gitflow</a>.</p>
+<p>The idea is that we introduce another a new branch called the <em>build</em> branch. It's responsiblity is
+to manage built versions of the software.</p>
+<p>Anytime you want to bump the <code>micro</code> version of the software; you <em>must</em> run a
+<a href="https://en.wikipedia.org/wiki/Software_build">build</a>. This build includes running unit, functional,
+and regression tests as well as necessary compilation steps. The output of this build is ideally
+something you can freely distribute (<a href="http://rpm.org/">RPM</a>, Zip archive, Tarball, Jar file, .exe file)</p>
+
+    </article>
+
+        </main>
+        <footer>
+            <hr>
+            <span>&copy; Patrick Hennessy <em>2015 - 2018</em><span>
+        </footer>
+    </body>
+</html>
