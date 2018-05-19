@@ -2,10 +2,10 @@
 {% block title %}Blog{% endblock %}
 {% block body %}
     <div id="posts">
-        {% for post in this.pagination.items %}
+        {% for post in this.pagination.items if post.title != "Welcome!" %}
             <section class="summary">
             <h1 id="title"><a href="{{ post.path }}">{{ post.title }}</a></h1>
-            <time>{{ post.date | dateformat('long')}}</time>
+            <time>{{ (post.date|dateformat('long') if post.date) }}</time>
 
             {% if post.cover_image %}
                 <img src="{{ post.path + "/" + post.cover_image }}" alt="">

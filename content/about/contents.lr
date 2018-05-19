@@ -1,7 +1,20 @@
-title: About this Website
+title: Welcome!
+---
+_model: about
+---
+image: portrait.jpeg
 ---
 body:
 
-This is a website that was made with the Lektor quickstart.
+**Name**: Patrick
 
-And it does not contain a lot of information.
+**Occupation**: Cloud Systems Administrator
+
+**Hobbies**:
+- Playing Guitar
+- Running / Resistance Training
+- Learning to cook
+- Competitive gaming
+- Programming
+
+This site is a place I can share about myself, so I post about whatever

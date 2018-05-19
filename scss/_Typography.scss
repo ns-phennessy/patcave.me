@@ -2,6 +2,9 @@
 // Typography
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
 
+@import url('https://fonts.googleapis.com/css?family=Maven+Pro|Boogaloo|Roboto+Mono');
+
+
 article > *:not(h1) {
 	margin-left: 3rem;
 
@@ -19,31 +22,21 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: 500;
 	letter-spacing: -.1rem;
 	margin-bottom: 2.0rem;
-	color: $color-text;
 }
 
 h1 {
 	font-size: 4rem;
 	line-height: 1.2;
-	color: $color-header;
 	position: relative;
-	margin-top: 10rem;
+	margin-top: 8rem;
 	padding-bottom: 1.5rem;
-	font-family: "Titillium Web";
+	font-family: "Boogaloo";
 }
 
 main > article > h1{
-	color: $color-header;
 
-	&:before {
-		content: "#";
-		padding-right: 1rem;
-		color: $color-text;
-		transition: 250ms color;
-	}
-
-	&:hover:before {
-		color: $color-text-highlight;
+	&:first-child {
+		margin-top: 2rem;
 	}
 
 	&:after {
@@ -55,7 +48,6 @@ main > article > h1{
 		height: 0;
 		width: 100%;
 		border-radius: 0;
-		border-bottom: 2px solid $color-lines;
 	}
 }
 

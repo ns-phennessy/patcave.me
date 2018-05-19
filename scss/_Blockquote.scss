@@ -3,11 +3,11 @@
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
 
 blockquote {
-	border-left: .3rem solid $color-lines;
-	margin-left: 5rem !important;
+	border-left: .3rem solid $color-primary;
+	border-radius: 0.35rem;	margin-left: 5rem !important;
 	margin-right: None;
 	padding: 1rem 1.5rem;
-	color: #ddd;
+	color: $color-text;
 
 	*:last-child {
 		margin-bottom: 0;

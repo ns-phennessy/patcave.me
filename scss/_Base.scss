@@ -2,6 +2,7 @@
 // Base
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
 
+
 // Set box-sizing globally to handle padding and border widths
 *,
 *:after,
@@ -18,9 +19,8 @@ html {
 
 // Default body styles
 body {
-	color: $color-secondary;
-	background-color: $color-initial;
-	font-family: 'Roboto', 'Arial', sans-serif;
+	color: #3f4d66;
+	font-family: 'Maven Pro', 'Arial', sans-serif;
 	font-size: 1.6em;
 	font-weight: 300;
 	letter-spacing: .01em;
@@ -30,7 +30,9 @@ body {
 }
 
 body > header {
-	background-color: $color-tertiary;
+	background-color: $color-primary;
+	// background-image: url("https://www.digitalocean.com/assets/media/homepage/v4/home-35d070be.svg");
+	background-size:100%;
 	padding: 3rem;
 	padding-bottom: 1rem;
 
@@ -45,16 +47,22 @@ body > header {
 	}
 
 	& a{
-		margin: 1rem 1.5rem;
+		padding: 1rem 1.5rem;
 		color: #D4DEFF !important;
 		font-weight: bold;
 		font-size: 1.4rem;
-		text-transform: uppercase;
+		// text-transform: uppercase;
 		padding-bottom: 1.4rem;
 		transition: all 150ms;
 		border-bottom: 3px solid transparent;
 		cursor: pointer;
 	}
+
+	& a:active {
+		text-decoration: None;
+		border-bottom: None;
+	}
+
 	& a:hover, & a:hover svg{
 		color: white !important;
 	}

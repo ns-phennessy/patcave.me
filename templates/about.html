@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 {% block title %}About{% endblock %}
 {% block body %}
-    <article>
-        <h1>This page is under construction...</h1>    
-    </article>
-
-
+    <div id="aboutme">
+        <img src="{{ this.image }}" alt="fff">
+        <summary>
+            {{ this.body }}
+        </summary>
+    </div>
 {% endblock %}

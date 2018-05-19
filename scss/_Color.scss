@@ -21,8 +21,23 @@ $color-quinary: lighten($color-quaternary, 10%);
 
 
 $color-header: #ffffff;
-$color-text: #98a5d1;
+$color-text: #606c76;
 $color-text-highlight: #ddd;
 $color-block: #1b2137;
 $color-block-border: darken(#1b2137, 7.5%);
-$color-lines: #282f4a;
+$color-lines: #8793ba;
+
+
+h1, h2, h3, h4, h5, h6 {
+	color: $color-text;
+}
+
+main > article > h1{
+	&:hover:before {
+		color: $color-text-highlight;
+	}
+
+	&:after {
+		border-bottom: 1px solid $color-text-highlight;
+	}
+}

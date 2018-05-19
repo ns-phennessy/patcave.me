@@ -3,27 +3,25 @@
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
 
 code {
-	background: $color-block;
-	border: 1px solid $color-block-border;
-	color: $color-text-highlight;
+	background: #f0f0f0;
 
 	border-radius: .4rem;
 	font-family: "Hack", monospace;
 	letter-spacing: 0.05rem;
 	margin: 0 .2rem;
-	padding: .2rem .5rem;
+	padding: .2rem .4rem;
 	white-space: nowrap;
 	font-size: 1.2rem;
 
 }
 
 pre {
-	background: $color-block;
-	border: 1px solid $color-block-border;
-	border-left: .3rem solid $color-primary;
+	background: #f0f0f0;
+	// border: 1px solid $color-primary;
 	font-family: "Hack", monospace;
 	font-size: 1.2rem;
 	overflow-y: hidden;
+	border-left: .3rem solid $color-primary;
 	border-radius: 0.35rem;
 	padding: 1rem;
 
@@ -34,6 +32,6 @@ pre {
 		font-size: 1rem;
 		white-space: pre;
 		border: None;
-		background-color: $color-block;
+		background-color: #f0f0f0;
 	}
 }
