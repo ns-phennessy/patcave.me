@@ -1,7 +1,17 @@
 language: python
-python: 3.5
-install: "pip install Lektor"
-script: "lektor build"
-deploy:
-  provider: script
-  script: "lektor deploy ghpages"
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.cache/lektor/builds
+
+python:
+  - '3.6'
+
+install:
+  - pip install lektor
+  - gem install sass
+
+script:
+  - scss --style=compressed scss/milligram.scss > assets/static/style.min.css
+  - lektor build
