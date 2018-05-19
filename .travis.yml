@@ -15,3 +15,9 @@ install:
 script:
   - scss --style=compressed scss/milligram.scss > assets/static/style.min.css
   - lektor build
+
+deploy:
+  provider: script
+  script: "lektor deploy ghpages"
+  on:
+    branch: gh-pages
