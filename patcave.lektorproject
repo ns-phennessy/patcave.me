@@ -8,4 +8,4 @@ lektor-markdown-header-anchors = 0.2
 lektor-webpack-support = 0.3
 
 [servers.ghpages]
-target = ghpages://ns-phennessy/patcave.me?cname=blog.patcave.me
+target = ghpages+https://ns-phennessy/patcave.me?cname=blog.patcave.me
