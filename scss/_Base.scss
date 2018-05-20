@@ -31,7 +31,6 @@ body {
 
 body > header {
 	background-color: $color-primary;
-	// background-image: url("https://www.digitalocean.com/assets/media/homepage/v4/home-35d070be.svg");
 	background-size:100%;
 	padding: 3rem;
 	padding-bottom: 1rem;
@@ -51,7 +50,6 @@ body > header {
 		color: #D4DEFF !important;
 		font-weight: bold;
 		font-size: 1.4rem;
-		// text-transform: uppercase;
 		padding-bottom: 1.4rem;
 		transition: all 150ms;
 		border-bottom: 3px solid transparent;

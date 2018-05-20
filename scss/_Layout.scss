@@ -29,12 +29,12 @@ body > header {
 }
 
 
-html, body {
-	height: 100%;
-}
+// html, body {
+// 	height: 100%;
+// }
 
 main {
-	min-height: calc(100% - 18rem);
+	// min-height: calc(100% - 18rem);
 
 	display: grid;
 	grid-template-columns: auto $container-size auto;
@@ -151,6 +151,11 @@ section.summary {
 		& > a {
 			color: $color-text;
 			transition: color 150ms;
+			max-width: 32ch;
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    display: inline-block;
 
 			&:hover {
 				color: lighten($color-text, 25%);
