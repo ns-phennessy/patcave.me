@@ -20,4 +20,4 @@ deploy:
   provider: script
   script: "lektor deploy ghpages"
   on:
-    branch: gh-pages
+    branch: master
