@@ -1,0 +1,67 @@
+title: Automate all the things!
+---
+_model: post
+---
+cover_image: cover.png
+---
+date: 2018-09-15
+---
+summary: Just explaining my hobby of automating parts of my other hobbies
+---
+body:
+
+# Intro
+
+I originally started programming and doing computer stuff way back in 2009; the end of high school.
+I had played a lot of Diablo II at the time; and in that game, to be 'godly' you needed to get a lot
+of high tier items. Doing that was a grind.
+
+So I had done a few things to try to "strike it rich". What I finally realized is that the botter's
+had it right. Automate the boring stuff and focus on what you want to do. So that's what I did!
+
+I downloaded the D2NT bot and started picking it apart. I didn't know anything about programming or
+software really. So I watched a few tutorials on the basics of Javascript (the embeded language the bot
+used to control it's actions). I didn't really understand the impact of changes I made so I made a LOT
+of mistakes and was forced to learn how the rest of it worked. This is where I learned to debug code
+as well; since most of what was there was code I personally didn't write.
+
+I did a bunch of mini projects with this botting software. One of them was a rush bot; that basically
+(100% automatically) went through all the quests in the game for a low level character; something
+that used to be very manual and time consuming. This meant I could offer it as a service and actually
+scale it out.
+
+# Automation is awesome
+
+It feels so good when you complete a project like that and it makes it so you almost don't have to
+do anything. Not only that; but even with something small like that; i learned a TON about how computers
+worked. I feel very strongly that the best way to learn CS is to partake in small but not dumb projects;
+make it something you actually care about and can have something tangible that you use after you're done.
+
+I have continued doing this ever since; even if it's been a lot less than I would want.
+
+# My Team Fortress 2 project
+
+Easily my favorite game of all time is [Team Fortress 2](http://www.teamfortress.com/), I love this
+game so much. I could probably write an entire book on what TF2 does right.
+
+So I have all these computer skills now; and one of the awesome things about Valve is they allow you
+to run your own servers! Not only that but there is a deep history of people modding the source engine
+for various things. Infact Valve literally released an SDK that exposes a lot of power to modders.
+
+So I'm definitely going to be running my own servers and have them decked out. Basically this project
+is solving the problem that, I want as close to a self service competitive TF2 server than I can get.
+
+Heres my requirements (if I had to write it down):
+
+Problem
+
+- Running servers 24/7 is expensive
+    - Allow users to create servers in an ad-hoc fashion
+    - These servers will shut themselves down after people leave it
+    - Add monitoring to find ways to optimize cost (and have an excuse to try out various monitoring tools)
+    - These servers will have all the custom maps and plugins needed to do a competitive TF2 match
+    - These servers will offer Death Match mod so players have something to do pre-game
+- Enable users to self service
+    - Admining servers does require a lot of knowledge... put some rails on things and give them a "UI" to work with
+- Automatically upload match recordings and statistics to somewhere users can get it
+- Integrate all this with chat services (Discord)
